@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/database/model/User.dart'as MyUser;
+import 'package:todo/providers/AuthProvider.dart';
 import '../../FireBaseErorrCode.dart';
 import '../../ValidationUtils.dart';
 import '../../database/UsersDao.dart';
 import '../DialogUtils.dart';
 import '../LoginPage/LoginScreen.dart';
 import '../common/CustomFormField.dart';
-import 'dart:js_interop';
+
 class RegisterScreen extends StatefulWidget {
   static const String routeName = 'reg';
 
@@ -42,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: Text(
-              'Register',
+              'Sign Up',
               style: Theme.of(context).textTheme.headlineLarge,
             ),
           ),
@@ -132,7 +134,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll(
                                 Theme.of(context).primaryColor)),
-                      )
+                      ),
+                      TextButton(onPressed: (){
+                        Navigator.pushReplacementNamed(context,LoginScreen.routeName);
+                      }, child: const Text('Already Have An Account?'))
                     ],
                   ),
                 ),
@@ -146,17 +151,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (formKey.currentState?.validate() == false) {
       return;
     }
+    var authProvider  = Provider.of<AuthProvider>(context,listen: false);
     try {
       DialogUtils.showLoading(context, 'Creating Account.Please Wait');
-      var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email.text, password: password.text);
-      // await UsersDao.createUser(MyUser.User(
-      //   id:result.user?.uid ,
-      //   fullName:fullName.text ,
-      //   userName:userName.text ,
-      //   email:email.text ,
-      //
-      // ) );
+      await authProvider.register(email.text, password.text, fullName.text, userName.text);
       DialogUtils.hideDialog(context);
       DialogUtils.showMessage(context, 'Account Created Successfully',
           posActionTitle: 'OK', posAction: () {

@@ -1,4 +1,4 @@
-/*
+
 class User {
   static const String collectionName = 'users';
   String? id;
@@ -8,12 +8,12 @@ class User {
 
   User({this.id,this.fullName,this.userName,this.email});
 
-  User.fromFireStore(Map<String,dynamic>? data){
-    id = data?['id'];
-    fullName = data?['fullN ame'];
-    userName = data? ['userName'];
-    email = data? ['email'];
-  }
+  User.fromFireStore(Map<String,dynamic>? data):this(
+    id : data?['id'],
+    fullName : data?['fullName'],
+    userName : data? ['userName'],
+    email : data? ['email'],
+  );
 
   Map<String,dynamic> toFireStore (){
     return{
@@ -24,4 +24,4 @@ class User {
     };
 
   }
-}*/
+}

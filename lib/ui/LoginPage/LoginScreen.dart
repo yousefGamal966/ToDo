@@ -1,13 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/FireBaseErorrCode.dart';
 import 'package:todo/My%20Theme%20Data.dart';
 import 'package:todo/ValidationUtils.dart';
+import 'package:todo/database/UsersDao.dart';
+import 'package:todo/providers/AuthProvider.dart';
 import 'package:todo/ui/DialogUtils.dart';
+import 'package:todo/ui/RegisterPage/RegisterScreen.dart';
 import 'package:todo/ui/common/CustomFormField.dart';
 import 'package:todo/ui/home/HomeScreen.dart';
-import 'dart:js_interop';
+
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'log';
 
@@ -36,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: Text(
-              'Login',
+              'Sign In',
               style: Theme.of(context).textTheme.headlineLarge
             ),
           ),
@@ -83,7 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ElevatedButton(
                     onPressed: () {
                       login();
+
                     },
+
                     child: Text(
                       'Login',
                       style: TextStyle(color: Colors.white),
@@ -91,7 +97,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
                             Theme.of(context).primaryColor)),
-                  )
+                  ),
+
+                  TextButton(onPressed: (){
+                    Navigator.pushReplacementNamed(context, RegisterScreen.routeName);
+                  }, child:const Text('Create New Account?'))
                 ],
               ),
             ),
@@ -105,19 +115,22 @@ class _LoginScreenState extends State<LoginScreen> {
       return ;
 
     }
+    var authProvider = Provider.of<AuthProvider>(context,listen: false);
     try{
       DialogUtils.showLoading(context,'Loading...',isCancelable: false);
-      var result = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.text,
-          password: password.text
-      );
+print(email.text);
+print(password.text);
+print('---------------');
+      await authProvider.login(email.text, password.text);
       DialogUtils.hideDialog(context);
       DialogUtils.showMessage(context,'User Logged in Successful',posActionTitle: 'OK',posAction:(){
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+
       });
 
     }
     on FirebaseAuthException catch (e) {
+      print(e);
       DialogUtils.hideDialog(context);
 
       if (e.code == FireBaseErorrCode.userNotFound || e.code == FireBaseErorrCode.wrongPassword||

@@ -9,7 +9,10 @@ class DialogUtils {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(message),
-            CircularProgressIndicator(color: Theme.of(context).primaryColor,)
+            Container(
+                width: 25,
+                height: 25,
+                child: CircularProgressIndicator(color: Theme.of(context).primaryColor,))
           ],
         ),
       );
@@ -33,7 +36,7 @@ class DialogUtils {
     actions.add(TextButton(onPressed: (){
     Navigator.pop(context);
     negAction?.call();
-    },child:Text(negActionTitle) ,));
+    },child:Text(negActionTitle,style: TextStyle(color: Colors.red),) ,));
     }
     showDialog(context: context, builder:(BuildContext){
       return AlertDialog(

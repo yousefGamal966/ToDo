@@ -1,8 +1,8 @@
 
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:todo/database/model/User.dart';
+ import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo/database/model/User.dart';
 
-/*class UsersDao {
+class UsersDao {
 
   static CollectionReference<User>getUsersCollection (){
      var db = FirebaseFirestore.instance;
@@ -17,5 +17,12 @@
    return docs.set(user);
 
   }
+
+  static Future<User?> getUser(String uid)async {
+    var docs = getUsersCollection()
+        .doc(uid);
+    var docSnapshot =await docs.get();
+    return docSnapshot.data();
+  }
  
-}*/
+}
