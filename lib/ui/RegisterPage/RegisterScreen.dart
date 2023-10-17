@@ -6,6 +6,7 @@ import 'package:todo/providers/AuthProvider.dart';
 import '../../FireBaseErorrCode.dart';
 import '../../ValidationUtils.dart';
 import '../../database/UsersDao.dart';
+import '../../providers/SettingsProvider.dart';
 import '../DialogUtils.dart';
 import '../LoginPage/LoginScreen.dart';
 import '../common/CustomFormField.dart';
@@ -32,10 +33,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/reg_back_screen.png'),
+                image: AssetImage(settingsProvider.getRegImage()),
                 fit: BoxFit.fill)),
         child: Scaffold(
           backgroundColor: Colors.transparent,

@@ -5,6 +5,7 @@ class DialogUtils {
   static void showLoading(BuildContext context,String message,{bool isCancelable =true}){
     showDialog(context: context, builder:(BuildContext){
       return AlertDialog(
+        backgroundColor: Theme.of(context).canvasColor,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -40,7 +41,7 @@ class DialogUtils {
     }
     showDialog(context: context, builder:(BuildContext){
       return AlertDialog(
-
+      backgroundColor: Theme.of(context).canvasColor,
         actions: actions,
         content: Row(
 

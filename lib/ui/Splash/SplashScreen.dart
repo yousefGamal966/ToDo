@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/providers/AuthProvider.dart';
+import 'package:todo/providers/SettingsProvider.dart';
+import 'package:todo/providers/TaskProvider.dart';
 import 'package:todo/ui/LoginPage/LoginScreen.dart';
 import 'package:todo/ui/home/HomeScreen.dart';
 
@@ -24,18 +26,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
-
+  var settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
-      body: Image.asset('assets/images/splash_light.png',fit: BoxFit.fill,),
+      body: Image.asset(settingsProvider.getSplashImage(),fit: BoxFit.fill,),
 
     );
   }
 
   void navigate() async{
     var authProvider = Provider.of<AuthProvider>(context,listen: false);
+    var taskProvider = Provider.of<TaskProvider>(context,listen: false);
       if(FirebaseAuth.instance.currentUser != null){
-        authProvider.retrieveUserFromDatabase();
-        await Navigator.pushReplacementNamed(context,HomeScreen.routeName);
+        await authProvider.retrieveUserFromDatabase();
+        taskProvider.uid = authProvider.firebaseAuthUser!.uid;
+         Navigator.pushReplacementNamed(context,HomeScreen.routeName);
 
       }else{
          await Navigator.pushReplacementNamed(context, LoginScreen.routeName);

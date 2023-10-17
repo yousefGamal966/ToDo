@@ -10,11 +10,17 @@ class SettingsProvider extends ChangeNotifier{
     currentTheme = newTheme;
     notifyListeners();
   }
-  String getBackgroundImage (){
+  String getSplashImage (){
     return currentTheme == ThemeMode.dark?
-    'assets/images/dark_background.png':
-    'assets/images/main_background.jpg';
+    'assets/images/splash_dark.png':
+    'assets/images/splash_light.png';
   }
+  String getRegImage (){
+    return currentTheme == ThemeMode.dark?
+    'assets/images/reg_back_screen_dark.png':
+    'assets/images/reg_back_screen.png';
+  }
+
   bool isDarkEnabled(){
     return currentTheme == ThemeMode.dark;
   }

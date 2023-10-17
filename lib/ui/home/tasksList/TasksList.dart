@@ -1,58 +1,65 @@
+import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/database/TasksDao.dart';
+import 'package:todo/providers/SettingsProvider.dart';
+import 'package:todo/providers/TaskProvider.dart';
 import 'package:todo/ui/home/tasksList/TaskWidget.dart';
 
 import '../../../providers/AuthProvider.dart';
 
-class TasksList extends StatelessWidget {
-  const TasksList({super.key});
+class TasksList extends StatefulWidget {
+  @override
+  State<TasksList> createState() => _TasksListState();
+}
+
+class _TasksListState extends State<TasksList> {
+  DateTime selectedDay = DateTime.now();
+
+  DateTime focusDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = Provider.of<AuthProvider>(context,listen: false);
+    var authProvider = Provider.of<AuthProvider>(context);
+    var settingsProvider = Provider.of<SettingsProvider>(context);
+    var taskProvider = Provider.of<TaskProvider>(context);
     return Column(
       children: [
-
-        Expanded(
-
-            child:StreamBuilder(stream:TasksDao.listenForTasks(authProvider.firebaseAuthUser?.uid??'') ,
-              builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                else if(snapshot.hasError){
-                  print(snapshot);
-                  print(authProvider.databaseUser?.fullName);
-                  print(authProvider.databaseUser?.email);
-                  print(authProvider.databaseUser?.id);
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Something Went Wrong. Please Try Again Later.'),
-                        ElevatedButton(onPressed: (){
-
-                        }, child:Text('Try Again'))
-                      ],
-                    ),
-                  );
-                }
-                var tasksList = snapshot.data;
-                return ListView.builder(itemBuilder: (context, index) {
-                  return TaskWidget(tasksList![index]);
-
-                },itemCount: tasksList?.length??0,);
-              },)
-
+        //SizedBox(height: 15,),
+        CalendarTimeline(
+          initialDate: selectedDay,
+          firstDate: DateTime.now().subtract(Duration(days: 365)),
+          lastDate: DateTime.now().add(Duration(days: 365)),
+          onDateSelected: (date) => setState(() {
+            selectedDay = date;
+          }),
+          activeBackgroundDayColor: Theme.of(context).primaryColor,
+          monthColor: Theme.of(context).hintColor,
+        ),
+        SizedBox(
+          height: 30,
         ),
 
+        Expanded(
+            child: FutureBuilder(
+          future: taskProvider.getAllTasks(selectedDay),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            var tasksList = snapshot.data;
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return TaskWidget(tasksList![index]);
+              },
+              itemCount: tasksList?.length ?? 0,
+            );
+          },
+        )),
       ],
     );
   }
-
-
-
 }

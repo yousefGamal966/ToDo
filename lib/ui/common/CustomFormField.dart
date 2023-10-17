@@ -10,13 +10,14 @@ class CustomFormFiled extends StatelessWidget {
   TextEditingController? controller;
   int lines;
   TextStyle? style;
+  String? initial;
   CustomFormFiled(
       {required this.hintText,
       this.keyboardType = TextInputType.text,
       this.secureText = false,
         this.validator,this.controller,
         this.lines = 1,
-        this.style
+        this.style,this.initial
 
       });
 

@@ -4,9 +4,14 @@ class MyThemeData{
   static Color primaryColor = Color(0xFF5D9CEC);
   static Color lightBackColor = Color(0xFFDEEBDA);
   static Color darkBackColor = Color(0xFF060E1E);
+  static Color taskColor = Color(0xFF141922);
   static ThemeData lightTheme = ThemeData(
-    dividerColor: darkBackColor,
+    cardColor: Colors.white,
+    primaryColor: primaryColor,
+    dividerColor: primaryColor,
     scaffoldBackgroundColor: lightBackColor,
+    canvasColor: Colors.white,
+    hintColor: Colors.black,
     useMaterial3: false,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primaryColor
@@ -23,15 +28,23 @@ class MyThemeData{
       seedColor: primaryColor,
       primary: primaryColor,
     ),
+    datePickerTheme:DatePickerThemeData(
+        backgroundColor:lightBackColor
+    ) ,
 
 
   );
   static ThemeData darkTheme = ThemeData (
-    dividerColor: lightBackColor,
+    primaryColor: primaryColor,
+    dividerColor: primaryColor,
     scaffoldBackgroundColor: darkBackColor,
+    canvasColor: taskColor,
+    hintColor: Colors.white,
+
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryColor,
       primary: primaryColor,
+
 
     ),
 
@@ -58,6 +71,24 @@ class MyThemeData{
 
       )
     ),
+    datePickerTheme:DatePickerThemeData(
+        backgroundColor:taskColor,dayStyle: TextStyle(color: Colors.white),
+      weekdayStyle: TextStyle(color: Colors.white),
+      yearStyle: TextStyle(color: Colors.white),
+      headerHeadlineStyle: TextStyle(color: Colors.white),
+      headerHelpStyle: TextStyle(color: Colors.white),
+      rangePickerHeaderHeadlineStyle: TextStyle(color: Colors.white),
+      rangePickerHeaderHelpStyle: TextStyle(color: Colors.white),
+      inputDecorationTheme: InputDecorationTheme(),
+      shadowColor:primaryColor,
+      elevation: 2,
+
+
+
+
+
+    ) ,
+    cardColor: taskColor
       );
 
 

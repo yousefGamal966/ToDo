@@ -109,7 +109,7 @@ bool showDateError = false;
     Task task = Task(
       title: titleController.text,
       description: descriptionController.text,
-      dateTime: Timestamp.fromMillisecondsSinceEpoch(selectedDate!.millisecondsSinceEpoch)
+      dateTime: DateTime.fromMillisecondsSinceEpoch(selectedDate!.millisecondsSinceEpoch)
 
     );
     DialogUtils.showLoading(context,'Creating Task Please Wait.');
@@ -124,9 +124,12 @@ bool showDateError = false;
   DateTime? selectedDate;
   void showTaskDatePicker()async {
     var date  = await showDatePicker(context: context,
+
         initialDate:selectedDate??DateTime.now(),
         firstDate: DateTime.now(),
-        lastDate:DateTime.now().add(Duration(days: 365)));
+        lastDate:DateTime.now().add(Duration(days: 365))
+    ,
+    );
 
       setState((){
 
@@ -136,3 +139,4 @@ bool showDateError = false;
       });
   }
 }
+

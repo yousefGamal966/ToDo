@@ -40,7 +40,7 @@ List<String> appBarName = [
       floatingActionButton: FloatingActionButton(
         shape: StadiumBorder(
           side: BorderSide(
-            width: 3.5,color: Colors.white
+            width: 3.5,color:Theme.of(context).canvasColor
           )
         ),
         onPressed: (){
@@ -49,10 +49,12 @@ List<String> appBarName = [
         child: Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
+        color:Theme.of(context).canvasColor ,
+        elevation:2 ,
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
-        child: BottomNavigationBar(
-          backgroundColor: Colors.transparent,
+        child: BottomNavigationBar(unselectedItemColor: Theme.of(context).hintColor,
+          backgroundColor:Colors.transparent ,
           elevation: 0,
           onTap: (index){
             setState(() {

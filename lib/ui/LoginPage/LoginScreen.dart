@@ -7,11 +7,13 @@ import 'package:todo/My%20Theme%20Data.dart';
 import 'package:todo/ValidationUtils.dart';
 import 'package:todo/database/UsersDao.dart';
 import 'package:todo/providers/AuthProvider.dart';
+import 'package:todo/providers/SettingsProvider.dart';
+import 'package:todo/providers/TaskProvider.dart';
 import 'package:todo/ui/DialogUtils.dart';
 import 'package:todo/ui/RegisterPage/RegisterScreen.dart';
 import 'package:todo/ui/common/CustomFormField.dart';
 import 'package:todo/ui/home/HomeScreen.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'log';
 
@@ -28,10 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/reg_back_screen.png'),
+                image: AssetImage(settingsProvider.getRegImage()),
                 fit: BoxFit.fill)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -40,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: Text(
-              'Sign In',
+              AppLocalizations.of(context)!.login,
               style: Theme.of(context).textTheme.headlineLarge
             ),
           ),
@@ -101,7 +104,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   TextButton(onPressed: (){
                     Navigator.pushReplacementNamed(context, RegisterScreen.routeName);
-                  }, child:const Text('Create New Account?'))
+                  }, child:const Text('Create New Account?')),
+                  TextButton(onPressed: (){
+                    Navigator.pushReplacementNamed(context, RegisterScreen.routeName);
+                  }, child:const Text('Sign In With Phone Number?'))
+
                 ],
               ),
             ),
@@ -116,16 +123,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
     }
     var authProvider = Provider.of<AuthProvider>(context,listen: false);
+    var taskProvider = Provider.of<TaskProvider>(context,listen: false);
     try{
       DialogUtils.showLoading(context,'Loading...',isCancelable: false);
 print(email.text);
 print(password.text);
 print('---------------');
       await authProvider.login(email.text, password.text);
+      taskProvider.uid = authProvider.firebaseAuthUser!.uid;
       DialogUtils.hideDialog(context);
       DialogUtils.showMessage(context,'User Logged in Successful',posActionTitle: 'OK',posAction:(){
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-
       });
 
     }
