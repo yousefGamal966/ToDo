@@ -20,9 +20,9 @@ class _TasksListState extends State<TasksList> {
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = Provider.of<AuthProvider>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     var settingsProvider = Provider.of<SettingsProvider>(context);
-    var taskProvider = Provider.of<TaskProvider>(context);
+
     return Column(
       children: [
         //SizedBox(height: 15,),
@@ -41,8 +41,8 @@ class _TasksListState extends State<TasksList> {
         ),
 
         Expanded(
-            child: FutureBuilder(
-          future: taskProvider.getAllTasks(selectedDay),
+            child: StreamBuilder(
+          stream:TasksDao.listenForTasks(authProvider.databaseUser?.id??'', selectedDay),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(

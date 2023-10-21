@@ -39,7 +39,7 @@ class _TaskWidgetState extends State<TaskWidget> {
           ]),
       child: InkWell(
         onTap: (){
-          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditScreen(widget.task),));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditScreen(widget.task),));
         },
         child:
 

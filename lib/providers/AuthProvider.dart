@@ -9,8 +9,9 @@ class AuthProvider extends ChangeNotifier{
   String? userId;
   String? setUserId(id){
     id = userId;
-    return id;
     notifyListeners();
+    return id;
+
   }
 
   Future<void> register (String email,String password,String fullName,String userName)async{

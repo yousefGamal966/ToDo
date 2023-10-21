@@ -25,15 +25,23 @@ void main()async {
   );
   runApp(
 
-      MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_)=>AuthProvider()),
-            ChangeNotifierProvider(create: (_)=>SettingsProvider()),
-            ChangeNotifierProvider(create: (_)=>TaskProvider()),
-
-
-          ],
-          child: MyApp())
+      // MultiProvider(
+      //     providers: [
+      //       ChangeNotifierProvider(create: (_)=> AuthProvider()),
+      //       ChangeNotifierProvider(create: (_)=> SettingsProvider()),
+      //       ChangeNotifierProvider(create: (_)=> TaskProvider()),
+      //
+      //
+      //     ],
+           ChangeNotifierProvider(
+             create: (context) => TaskProvider(),
+             child: ChangeNotifierProvider(
+               create: (context) => SettingsProvider(),
+               child: ChangeNotifierProvider(
+                   create: (context) => AuthProvider(),
+                   child: MyApp()),
+             ),
+           )
       );
 }
 
@@ -46,8 +54,6 @@ class MyApp extends StatelessWidget {
   var settingsProvider  = Provider.of<SettingsProvider>(context);
     return MaterialApp(
       title: 'To Do',
-
-
       theme: MyThemeData.lightTheme,
       darkTheme: MyThemeData.darkTheme,
       themeMode:settingsProvider.currentTheme ,
