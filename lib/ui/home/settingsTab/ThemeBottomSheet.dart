@@ -63,12 +63,12 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
   }
 
   Widget getUnselectedItem({required String unselectedThemeName}) {
-    var settingsProvider = SettingsProvider();
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Container(
       width: double.infinity,
       child: Text(unselectedThemeName,
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 25,color:settingsProvider.isDarkEnabled()?Colors.white:Colors.black
           )),
     );
   }

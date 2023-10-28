@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/database/TasksDao.dart';
 
 import 'package:todo/database/model/Task.dart';
+import 'package:todo/providers/AuthProvider.dart';
+import 'package:todo/ui/DialogUtils.dart';
+import 'package:todo/ui/home/HomeScreen.dart';
 
 
 class EditScreen extends StatefulWidget {
@@ -20,9 +25,18 @@ class _EditScreenState extends State<EditScreen> {
   var descriptionController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+  late DateTime selectedDate;
+  @override
+  void initState() {
+    super.initState();
+  selectedDate = DateTime.fromMillisecondsSinceEpoch(widget.task.dateTime!);
+  titleController.text = widget.task.title!;
+  descriptionController.text = widget.task.description!;
+  }
 
   @override
   Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
 
@@ -41,49 +55,63 @@ class _EditScreenState extends State<EditScreen> {
 
               ),
             ),
-            Card(
-              margin: EdgeInsets.symmetric(vertical: 60,horizontal: 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18)
-              ),
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Edit Task',textAlign: TextAlign.center,style: TextStyle(
-                      fontSize: 26,fontWeight: FontWeight.w600,fontFamily: 'TaskHead',color: Theme.of(context).hintColor
-                    ),),
-                    Form(
-                        key: formKey,
-                        child: Column(
-                      children: [
-                        TextFormField(style: TextStyle(
-                          color: Theme.of(context).hintColor
-                        ),
-                          initialValue:widget.task.title,
-                            onChanged: (String value) {
-                              widget.task.title = value;
-                            }
-                        ),
-                        TextFormField(
-                          initialValue:widget.task.description,
+            SingleChildScrollView(
+              child: Card(
+                margin: EdgeInsets.symmetric(vertical: 60,horizontal: 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18)
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Edit Task',textAlign: TextAlign.center,style: TextStyle(
+                        fontSize: 26,fontWeight: FontWeight.w600,fontFamily: 'TaskHead',color: Theme.of(context).hintColor
+                      ),),
+                      Form(
+                          key: formKey,
+                          child: Column(
+                        children: [
+                          TextFormField(style: TextStyle(
+                            color: Theme.of(context).hintColor
+                          ),controller: titleController,
 
-                          onChanged: (String value) {
-                            widget.task.description = value;
-                          }
+                          ),
+                          TextFormField(
+                            controller: descriptionController,
 
-                        ),
-                      ],
-                    )),
-                    SizedBox(height: 50,),
-                    Text(
-                      'Select Date',textAlign: TextAlign.start,style: TextStyle(
-                        fontSize: 20,fontFamily: 'TaskHead',color: Theme.of(context).hintColor
-                    ),),
-                    Text('${widget.task.dateTime!.year}/${widget.task.dateTime!.month}/${widget.task.dateTime!.day}'),
-                  ],
+                          ),
+                        ],
+                      )),
+                      SizedBox(height: 50,),
+                      Text(
+                        'Select Date',textAlign: TextAlign.center,style: TextStyle(
+                          fontSize: 20,fontFamily: 'TaskHead',color: Theme.of(context).hintColor
+                      ),),SizedBox(height: 10,),
+                     InkWell(
+                       onTap: (){
+                         showTaskDatePicker();
+                       },
+                       child: Text('${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',style: TextStyle(
+                         color:Colors.blue
+                       ),textAlign: TextAlign.center),
+                     ),SizedBox(height: 20,),
+                      ElevatedButton(onPressed: (){
+                        Task taskModel = Task(title: titleController.text,description: descriptionController.text,
+                            dateTime:DateUtils.dateOnly(selectedDate).millisecondsSinceEpoch
+                            ,id: widget.task.id,isDone: widget.task.isDone
+                        );
+
+                        TasksDao.updateTasks(authProvider.firebaseAuthUser?.uid??'',taskModel);
+                        DialogUtils.showMessage(context, 'Your Task Changed Successfully',posActionTitle: 'OK',
+                            posAction:(){
+                          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+                            } );
+                      }, child: Text('Change Task')),
+                    ],
+                  ),
                 ),
               ),
             )
@@ -91,5 +119,22 @@ class _EditScreenState extends State<EditScreen> {
         ),
       ),
     );
+  }
+  void showTaskDatePicker()async {
+    var date  = await showDatePicker(context: context,
+
+      initialDate:selectedDate,
+      firstDate: DateTime.now(),
+      lastDate:DateTime.now().add(Duration(days: 365))
+      ,
+    );
+
+    setState((){
+
+
+      if(date == null){
+        return;}
+      selectedDate =DateUtils.dateOnly(date);
+    });
   }
 }

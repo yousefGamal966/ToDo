@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 //provider
 class SettingsProvider extends ChangeNotifier{
   ThemeMode currentTheme = ThemeMode.light;
   Locale currentLocale = Locale('en');
+  SharedPreferences? prefs;
   void changeTheme(ThemeMode newTheme){
     if (newTheme == currentTheme)return;
     currentTheme = newTheme;
+    saveTheme(newTheme);
     notifyListeners();
+
   }
   String getSplashImage (){
     return currentTheme == ThemeMode.dark?
@@ -24,22 +28,21 @@ class SettingsProvider extends ChangeNotifier{
   bool isDarkEnabled(){
     return currentTheme == ThemeMode.dark;
   }
-  void changeLanguage(Locale newLocale){
-    if (newLocale == currentLocale)return;
-      currentLocale  = newLocale;
-    notifyListeners();
+  Future<void> saveTheme(ThemeMode themeMode) async {
+    String newTheme = themeMode == ThemeMode.dark ? 'dark' : 'light';
+    await prefs!.setString('theme', newTheme);
   }
-  bool isEnglishEnabled (){
-    return currentLocale == Locale('en');
+
+  String? getTheme() {
+    return prefs!.getString('theme');
   }
-  String getSebhaBodyImage (){
-      return currentTheme == ThemeMode.dark?
-      'assets/images/sebha_body_dark.png':
-      'assets/images/sebha_body.png';
+
+  Future<void> loadThemeData() async {
+    prefs = await SharedPreferences.getInstance();
+    String? oldTheme = getTheme();
+    if (oldTheme != null) {
+      currentTheme = oldTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
+    }
   }
-  String getSebhaHeadImage (){
-    return currentTheme == ThemeMode.dark?
-    'assets/images/sebha_head_dark.png':
-    'assets/images/sebha_head.png';
-  }
+
 }

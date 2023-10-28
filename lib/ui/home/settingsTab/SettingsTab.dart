@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/providers/SettingsProvider.dart';
 import 'package:todo/ui/home/settingsTab/ThemeBottomSheet.dart';
 
 class SettingsTab extends StatefulWidget {
@@ -11,9 +13,14 @@ class SettingsTab extends StatefulWidget {
 class _SettingsTabState extends State<SettingsTab> {
   @override
   Widget build(BuildContext context) {
+    var settingsProvider = Provider.of<SettingsProvider>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Text('Theme',style: TextStyle(
+          fontSize: 18,
+          color: settingsProvider.isDarkEnabled()?Colors.white:Colors.black
+        ),),
         InkWell(
           onTap: (){
             showThemeBottomSheet();
@@ -27,10 +34,15 @@ class _SettingsTabState extends State<SettingsTab> {
                 side: BorderSide(width: 2,color:Theme.of(context).dividerColor ),
                 borderRadius: BorderRadius.circular(12)
               ),
-              child: const Padding(
+              child:  Padding(
                 padding:  EdgeInsets.all(15),
-                child: Text('Light',style:TextStyle(
+                child: Text(
+                  settingsProvider.isDarkEnabled()?
+                      'Dark':'Light'
+
+                  ,style:TextStyle(
                   fontSize: 22,
+                  color: Theme.of(context).primaryColor
 
                 ),),
               ),

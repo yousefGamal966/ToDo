@@ -5,7 +5,7 @@ class Task {
   String? id;
   String? title;
   String? description;
-  DateTime? dateTime;
+  int? dateTime;
   bool isDone ;
   Task(
   {

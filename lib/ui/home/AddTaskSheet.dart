@@ -109,7 +109,7 @@ bool showDateError = false;
     Task task = Task(
       title: titleController.text,
       description: descriptionController.text,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(selectedDate!.millisecondsSinceEpoch)
+      dateTime: DateUtils.dateOnly(selectedDate!).millisecondsSinceEpoch
 
     );
     DialogUtils.showLoading(context,'Creating Task Please Wait.');

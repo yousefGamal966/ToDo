@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:todo/database/UsersDao.dart';
 import 'package:todo/database/model/Task.dart';
 
@@ -23,12 +24,9 @@ class TasksDao {
 
   static Future<List<Task>> getAllTasks(
       String uid, DateTime selectedDay) async {
-    var dateOnly = selectedDay.copyWith(
-        hour: 0, minute: 0, second: 0, microsecond: 0, millisecond: 0);
-    var taskSnapshot = await getTasksCollection(uid)
+     var taskSnapshot = await getTasksCollection(uid)
         .where('dateTime',
-            isEqualTo: Timestamp.fromMillisecondsSinceEpoch(
-                dateOnly.millisecondsSinceEpoch))
+            isEqualTo:DateUtils.dateOnly(selectedDay).millisecondsSinceEpoch)
         .get();
 
     var tasksList =
@@ -38,20 +36,26 @@ class TasksDao {
 
   static Stream<List<Task>> listenForTasks(
       String uid, DateTime selectedDay) async* {
-    var dateOnly = selectedDay.copyWith(
-        hour: 0, minute: 0, second: 0, microsecond: 0, millisecond: 0);
+
     var taskSnapshot = await getTasksCollection(uid)
         .where('dateTime',
-            isEqualTo: Timestamp.fromMillisecondsSinceEpoch(
-                dateOnly.millisecondsSinceEpoch))
-        .get();
-    var stream = await getTasksCollection(uid).snapshots();
-    yield* stream.map((querySnapshot) =>
+            isEqualTo:DateUtils.dateOnly(selectedDay).millisecondsSinceEpoch
+                ).snapshots();
+
+    yield* taskSnapshot.map((querySnapshot) =>
         querySnapshot.docs.map((doc) => doc.data()).toList());
-    // var tasksList = taskSnapshot.docs.map((snapshot) =>snapshot.data()).toList();
+
   }
 
   static Future<void> removeTask(String taskId, String uid) {
     return getTasksCollection(uid).doc(taskId).delete();
+  }
+  static Future<void> updateTasks(String uid,Task task)async{
+    await getTasksCollection(uid).doc(task.id).update(task.toFireStore());
+
+  }
+  static Future<void> isDone (String uid,Task task)async{
+    getTasksCollection(uid).doc(task.id).update({'isDone':task.isDone = true});
+
   }
 }

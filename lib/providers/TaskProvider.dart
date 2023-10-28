@@ -20,10 +20,16 @@ class TaskProvider extends ChangeNotifier{
   return;
   }
   Future<List<Task>>
-  getAllTasks(DateTime date){
+  getAllTasks(DateTime date)async{
 
     return TasksDao.getAllTasks(uid!,date);
 
   }
+  Stream<List<Task>>
+  listenTasks(DateTime date)async*{
 
+    yield* TasksDao.listenForTasks(uid!,date);
+
+
+  }
 }

@@ -20,29 +20,27 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
+  var settingsProvider = SettingsProvider();
+  await settingsProvider.loadThemeData();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
 
-      // MultiProvider(
-      //     providers: [
-      //       ChangeNotifierProvider(create: (_)=> AuthProvider()),
-      //       ChangeNotifierProvider(create: (_)=> SettingsProvider()),
-      //       ChangeNotifierProvider(create: (_)=> TaskProvider()),
-      //
-      //
-      //     ],
-           ChangeNotifierProvider(
-             create: (context) => TaskProvider(),
-             child: ChangeNotifierProvider(
-               create: (context) => SettingsProvider(),
-               child: ChangeNotifierProvider(
-                   create: (context) => AuthProvider(),
-                   child: MyApp()),
-             ),
-           )
-      );
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_)=> AuthProvider()),
+            ChangeNotifierProvider(create: (_)=> SettingsProvider()),
+            ChangeNotifierProvider(create: (_)=> TaskProvider()),
+
+
+          ],
+
+                   child: MyApp()
+
+
+      ));
 }
 
 class MyApp extends StatelessWidget {
